@@ -32,7 +32,7 @@ import com.marianhello.bgloc.service.LocationServiceInfo;
 import com.marianhello.bgloc.service.LocationServiceProxy;
 import com.marianhello.bgloc.service.LocationTransform;
 
-
+import com.marianhello.logging.LoggerManager;
 import com.marianhello.logging.UncaughtExceptionLogger;
 
 import org.json.JSONException;
@@ -73,6 +73,10 @@ public class BackgroundGeolocationFacade {
 
         UncaughtExceptionLogger.register(context.getApplicationContext());
 
+        logger = LoggerManager.getLogger(BackgroundGeolocationFacade.class);
+        LoggerManager.enableDBLogging();
+
+        logger.info("Initializing plugin");
 
         NotificationHelper.registerAllChannels(getApplicationContext());
     }
