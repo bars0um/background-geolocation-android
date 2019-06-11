@@ -24,6 +24,7 @@ import com.marianhello.bgloc.Config;
 import com.marianhello.bgloc.PluginException;
 import com.marianhello.bgloc.data.BackgroundActivity;
 import com.marianhello.bgloc.data.BackgroundLocation;
+import com.marianhello.logging.LoggerManager;
 import com.marianhello.utils.Tone;
 
 /**
@@ -42,6 +43,7 @@ public abstract class AbstractLocationProvider implements LocationProvider {
 
     protected AbstractLocationProvider(Context context) {
         mContext = context;
+        logger = LoggerManager.getLogger(getClass());
         logger.info("Creating {}", getClass().getSimpleName());
     }
 
