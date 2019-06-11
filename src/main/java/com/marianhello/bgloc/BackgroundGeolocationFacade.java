@@ -24,16 +24,15 @@ import com.marianhello.bgloc.data.BackgroundActivity;
 import com.marianhello.bgloc.data.BackgroundLocation;
 import com.marianhello.bgloc.data.ConfigurationDAO;
 import com.marianhello.bgloc.data.DAOFactory;
-import com.marianhello.bgloc.data.LocationDAO;
+
 import com.marianhello.bgloc.provider.LocationProvider;
 import com.marianhello.bgloc.service.LocationService;
 import com.marianhello.bgloc.service.LocationServiceImpl;
 import com.marianhello.bgloc.service.LocationServiceInfo;
 import com.marianhello.bgloc.service.LocationServiceProxy;
 import com.marianhello.bgloc.service.LocationTransform;
-import com.marianhello.logging.DBLogReader;
-import com.marianhello.logging.LogEntry;
-import com.marianhello.logging.LoggerManager;
+
+
 import com.marianhello.logging.UncaughtExceptionLogger;
 
 import org.json.JSONException;
@@ -74,10 +73,6 @@ public class BackgroundGeolocationFacade {
 
         UncaughtExceptionLogger.register(context.getApplicationContext());
 
-        logger = LoggerManager.getLogger(BackgroundGeolocationFacade.class);
-        LoggerManager.enableDBLogging();
-
-        logger.info("Initializing plugin");
 
         NotificationHelper.registerAllChannels(getApplicationContext());
     }
@@ -265,31 +260,13 @@ public class BackgroundGeolocationFacade {
         }
     }
 
-    public Collection<BackgroundLocation> getLocations() {
-        LocationDAO dao = DAOFactory.createLocationDAO(getContext());
-        return dao.getAllLocations();
-    }
+ 
 
-    public Collection<BackgroundLocation> getValidLocations() {
-        LocationDAO dao = DAOFactory.createLocationDAO(getContext());
-        return dao.getValidLocations();
-    }
 
     public BackgroundLocation getStationaryLocation() {
         return mStationaryLocation;
     }
 
-    public void deleteLocation(Long locationId) {
-        logger.info("Deleting location locationId={}", locationId);
-        LocationDAO dao = DAOFactory.createLocationDAO(getContext());
-        dao.deleteLocationById(locationId.longValue());
-    }
-
-    public void deleteAllLocations() {
-        logger.info("Deleting all locations");
-        LocationDAO dao = DAOFactory.createLocationDAO(getContext());
-        dao.deleteAllLocations();
-    }
 
     public BackgroundLocation getCurrentLocation(int timeout, long maximumAge, boolean enableHighAccuracy) throws PluginException {
         logger.info("Getting current location with timeout:{} maximumAge:{} enableHighAccuracy:{}", timeout, maximumAge, enableHighAccuracy);
@@ -374,15 +351,7 @@ public class BackgroundGeolocationFacade {
         }
     }
 
-    public Collection<LogEntry> getLogEntries(int limit) {
-        DBLogReader logReader = new DBLogReader();
-        return logReader.getEntries(limit, 0, Level.DEBUG);
-    }
-
-    public Collection<LogEntry> getLogEntries(int limit, int offset, String minLevel) {
-        DBLogReader logReader = new DBLogReader();
-        return logReader.getEntries(limit, offset, Level.valueOf(minLevel));
-    }
+  
 
     /**
      * Force location sync

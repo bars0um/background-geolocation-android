@@ -40,7 +40,6 @@ import com.marianhello.bgloc.data.BackgroundActivity;
 import com.marianhello.bgloc.data.BackgroundLocation;
 import com.marianhello.bgloc.data.ConfigurationDAO;
 import com.marianhello.bgloc.data.DAOFactory;
-import com.marianhello.bgloc.data.LocationDAO;
 import com.marianhello.bgloc.headless.ActivityTask;
 import com.marianhello.bgloc.headless.HeadlessTaskRunner;
 import com.marianhello.bgloc.headless.LocationTask;
@@ -110,7 +109,6 @@ public class LocationServiceImpl extends Service implements ProviderDelegate, Lo
     private final IBinder mBinder = new LocalBinder();
     private HandlerThread mHandlerThread;
     private ServiceHandler mServiceHandler;
-    private LocationDAO mLocationDAO;
     
     private String mHeadlessFunction;
     private HeadlessTaskRunner mHeadlessTaskRunner;
@@ -183,7 +181,7 @@ public class LocationServiceImpl extends Service implements ProviderDelegate, Lo
 
        
 
-        mLocationDAO = DAOFactory.createLocationDAO(this);
+        
 
         registerReceiver(connectivityChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
         NotificationHelper.registerServiceChannel(this);

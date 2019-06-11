@@ -6,17 +6,13 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.marianhello.bgloc.data.sqlite.SQLiteLocationContract.LocationEntry;
 import com.marianhello.bgloc.data.sqlite.SQLiteConfigurationContract.ConfigurationEntry;
 
 import java.util.ArrayList;
 
 import static com.marianhello.bgloc.data.sqlite.SQLiteConfigurationContract.ConfigurationEntry.SQL_CREATE_CONFIG_TABLE;
 import static com.marianhello.bgloc.data.sqlite.SQLiteConfigurationContract.ConfigurationEntry.SQL_DROP_CONFIG_TABLE;
-import static com.marianhello.bgloc.data.sqlite.SQLiteLocationContract.LocationEntry.SQL_CREATE_LOCATION_TABLE;
-import static com.marianhello.bgloc.data.sqlite.SQLiteLocationContract.LocationEntry.SQL_CREATE_LOCATION_TABLE_BATCH_ID_IDX;
-import static com.marianhello.bgloc.data.sqlite.SQLiteLocationContract.LocationEntry.SQL_CREATE_LOCATION_TABLE_TIME_IDX;
-import static com.marianhello.bgloc.data.sqlite.SQLiteLocationContract.LocationEntry.SQL_DROP_LOCATION_TABLE;
+
 
 public class SQLiteOpenHelper extends android.database.sqlite.SQLiteOpenHelper {
     private static final String TAG = SQLiteOpenHelper.class.getName();
@@ -62,10 +58,7 @@ public class SQLiteOpenHelper extends android.database.sqlite.SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         Log.d(TAG, "Creating db: " + this.getDatabaseName());
-        execAndLogSql(db, SQL_CREATE_LOCATION_TABLE);
         execAndLogSql(db, SQL_CREATE_CONFIG_TABLE);
-        execAndLogSql(db, SQL_CREATE_LOCATION_TABLE_TIME_IDX);
-        execAndLogSql(db, SQL_CREATE_LOCATION_TABLE_BATCH_ID_IDX);
     }
 
     @Override
@@ -73,42 +66,11 @@ public class SQLiteOpenHelper extends android.database.sqlite.SQLiteOpenHelper {
         Log.d(this.getClass().getName(), "Upgrading database oldVersion: " + oldVersion + " newVersion: " + newVersion);
 
         ArrayList<String> alterSql = new ArrayList<String>();
-        switch (oldVersion) {
-            case 10:
-                alterSql.add("ALTER TABLE " + LocationEntry.TABLE_NAME +
-                        " ADD COLUMN " + LocationEntry.COLUMN_NAME_STATUS + INTEGER_TYPE);
-                alterSql.add(SQL_CREATE_LOCATION_TABLE_TIME_IDX);
-                alterSql.add(SQL_DROP_CONFIG_TABLE);
-                alterSql.add(SQL_CREATE_CONFIG_TABLE);
-            case 11:
-                alterSql.add("ALTER TABLE " + LocationEntry.TABLE_NAME +
-                        " ADD COLUMN " + LocationEntry.COLUMN_NAME_RADIUS + REAL_TYPE);
-                alterSql.add("ALTER TABLE " + LocationEntry.TABLE_NAME +
-                        " ADD COLUMN " + LocationEntry.COLUMN_NAME_HAS_ACCURACY + INTEGER_TYPE);
-                alterSql.add("ALTER TABLE " + LocationEntry.TABLE_NAME +
-                        " ADD COLUMN " + LocationEntry.COLUMN_NAME_HAS_SPEED + INTEGER_TYPE);
-                alterSql.add("ALTER TABLE " + LocationEntry.TABLE_NAME +
-                        " ADD COLUMN " + LocationEntry.COLUMN_NAME_HAS_BEARING + INTEGER_TYPE);
-                alterSql.add("ALTER TABLE " + LocationEntry.TABLE_NAME +
-                        " ADD COLUMN " + LocationEntry.COLUMN_NAME_HAS_ALTITUDE + INTEGER_TYPE);
-                alterSql.add("ALTER TABLE " + LocationEntry.TABLE_NAME +
-                        " ADD COLUMN " + LocationEntry.COLUMN_NAME_HAS_RADIUS + INTEGER_TYPE);
-                alterSql.add("ALTER TABLE " + LocationEntry.TABLE_NAME +
-                        " ADD COLUMN " + LocationEntry.COLUMN_NAME_BATCH_START_MILLIS + INTEGER_TYPE);
-                alterSql.add(SQL_CREATE_LOCATION_TABLE_BATCH_ID_IDX);
-                alterSql.add("UPDATE " + LocationEntry.TABLE_NAME +
-                        " SET " + LocationEntry.COLUMN_NAME_HAS_ACCURACY + "= 1," +
-                        LocationEntry.COLUMN_NAME_HAS_SPEED + "= 1," +
-                        LocationEntry.COLUMN_NAME_HAS_BEARING + "= 1," +
-                        LocationEntry.COLUMN_NAME_HAS_ALTITUDE + "= 1," +
-                        LocationEntry.COLUMN_NAME_HAS_RADIUS + "= 1"
-                );
+        switch (oldVersion) {          
+            
             case 12:
                 alterSql.add("ALTER TABLE " + ConfigurationEntry.TABLE_NAME +
-                        " ADD COLUMN " + ConfigurationEntry.COLUMN_NAME_TEMPLATE + TEXT_TYPE);
-            case 13:
-                alterSql.add("ALTER TABLE " + LocationEntry.TABLE_NAME +
-                        " ADD COLUMN " + LocationEntry.COLUMN_NAME_MOCK_FLAGS + INTEGER_TYPE);
+                        " ADD COLUMN " + ConfigurationEntry.COLUMN_NAME_TEMPLATE + TEXT_TYPE);            
             case 14:
                 alterSql.add("ALTER TABLE " + ConfigurationEntry.TABLE_NAME +
                         " ADD COLUMN " + ConfigurationEntry.COLUMN_NAME_NOTIFICATIONS_ENABLED + INTEGER_TYPE);
@@ -127,7 +89,6 @@ public class SQLiteOpenHelper extends android.database.sqlite.SQLiteOpenHelper {
     @Override
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // we don't support db downgrade yet, instead we drop table and start over
-        execAndLogSql(db, SQL_DROP_LOCATION_TABLE);
         execAndLogSql(db, SQL_DROP_CONFIG_TABLE);
         onCreate(db);
     }

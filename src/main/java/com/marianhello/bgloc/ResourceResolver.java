@@ -8,9 +8,9 @@ import android.content.Context;
 public class ResourceResolver {
 
     private static final String RESOURCE_PREFIX = "mauron85_bgloc_";
-    private static final String ACCOUNT_NAME_RESOURCE = RESOURCE_PREFIX + "account_name";
-    private static final String ACCOUNT_TYPE_RESOURCE = RESOURCE_PREFIX + "account_type";
-    private static final String AUTHORITY_TYPE_RESOURCE = RESOURCE_PREFIX + "content_authority";
+   //// private static final String ACCOUNT_NAME_RESOURCE = RESOURCE_PREFIX + "account_name";
+   // private static final String ACCOUNT_TYPE_RESOURCE = RESOURCE_PREFIX + "account_type";
+   // private static final String AUTHORITY_TYPE_RESOURCE = RESOURCE_PREFIX + "content_authority";
 
     private Context mContext;
 
@@ -37,17 +37,6 @@ public class ResourceResolver {
         return getApplicationContext().getString(getAppResource(name, "string"));
     }
 
-    public String getAccountName() {
-        return getString(ACCOUNT_NAME_RESOURCE);
-    }
-
-    public String getAccountType() {
-        return getString(ACCOUNT_TYPE_RESOURCE);
-    }
-
-    public String getAuthority() {
-        return getString(AUTHORITY_TYPE_RESOURCE);
-    }
 
     public static ResourceResolver newInstance(Context context) {
         return new ResourceResolver(context);

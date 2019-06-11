@@ -9,8 +9,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v4.util.TimeUtils;
 
-import com.marianhello.bgloc.data.sqlite.SQLiteLocationContract;
-import com.marianhello.bgloc.data.sqlite.SQLiteLocationContract.LocationEntry;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -159,42 +157,7 @@ public class BackgroundLocation implements Parcelable {
         return l;
     }
 
-    /**
-     * Create a new Location from a cursor
-     *
-     * @param c the cursor
-     * @return the note
-     */
-    public static BackgroundLocation fromCursor(Cursor c) {
-        BackgroundLocation l = new BackgroundLocation();
-
-        l.setProvider(c.getString(c.getColumnIndex(LocationEntry.COLUMN_NAME_PROVIDER)));
-        l.setTime(c.getLong(c.getColumnIndex(LocationEntry.COLUMN_NAME_TIME)));
-        if (c.getInt(c.getColumnIndex(LocationEntry.COLUMN_NAME_HAS_ACCURACY)) == 1) {
-            l.setAccuracy(c.getFloat(c.getColumnIndex(LocationEntry.COLUMN_NAME_ACCURACY)));
-        }
-        if (c.getInt(c.getColumnIndex(LocationEntry.COLUMN_NAME_HAS_SPEED)) == 1) {
-            l.setSpeed(c.getFloat(c.getColumnIndex(LocationEntry.COLUMN_NAME_SPEED)));
-        }
-        if (c.getInt(c.getColumnIndex(LocationEntry.COLUMN_NAME_HAS_BEARING)) == 1) {
-            l.setBearing(c.getFloat(c.getColumnIndex(LocationEntry.COLUMN_NAME_BEARING)));
-        }
-        if (c.getInt(c.getColumnIndex(LocationEntry.COLUMN_NAME_HAS_ALTITUDE)) == 1) {
-            l.setAltitude(c.getDouble(c.getColumnIndex(LocationEntry.COLUMN_NAME_ALTITUDE)));
-        }
-        if (c.getInt(c.getColumnIndex(LocationEntry.COLUMN_NAME_HAS_RADIUS)) == 1) {
-            l.setRadius(c.getFloat(c.getColumnIndex(LocationEntry.COLUMN_NAME_RADIUS)));
-        }
-        l.setLatitude(c.getDouble(c.getColumnIndex(LocationEntry.COLUMN_NAME_LATITUDE)));
-        l.setLongitude(c.getDouble(c.getColumnIndex(LocationEntry.COLUMN_NAME_LONGITUDE)));
-        l.setLocationProvider(c.getInt(c.getColumnIndex(LocationEntry.COLUMN_NAME_LOCATION_PROVIDER)));
-        l.setBatchStartMillis(c.getLong(c.getColumnIndex(LocationEntry.COLUMN_NAME_BATCH_START_MILLIS)));
-        l.setStatus(c.getInt(c.getColumnIndex(LocationEntry.COLUMN_NAME_STATUS)));
-        l.setLocationId(c.getLong(c.getColumnIndex(LocationEntry._ID)));
-        l.setMockFlags(c.getInt((c.getColumnIndex(LocationEntry.COLUMN_NAME_MOCK_FLAGS))));
-
-        return l;
-    }
+ 
 
     @Override
     public int describeContents() {
@@ -873,33 +836,7 @@ public class BackgroundLocation implements Parcelable {
         return json;
     }
 
-    /**
-     * Return the contentvalues for this record
-     */
-    public ContentValues toContentValues() {
-        ContentValues values = new ContentValues();
-        //values.put(LocationEntry._ID, locationId);
-        values.put(LocationEntry.COLUMN_NAME_TIME, time);
-        values.put(LocationEntry.COLUMN_NAME_ACCURACY, accuracy);
-        values.put(LocationEntry.COLUMN_NAME_SPEED, speed);
-        values.put(LocationEntry.COLUMN_NAME_BEARING, bearing);
-        values.put(LocationEntry.COLUMN_NAME_ALTITUDE, altitude);
-        values.put(LocationEntry.COLUMN_NAME_LATITUDE, latitude);
-        values.put(LocationEntry.COLUMN_NAME_LONGITUDE, longitude);
-        values.put(LocationEntry.COLUMN_NAME_RADIUS, radius);
-        values.put(LocationEntry.COLUMN_NAME_HAS_ACCURACY, hasAccuracy);
-        values.put(LocationEntry.COLUMN_NAME_HAS_SPEED, hasSpeed);
-        values.put(LocationEntry.COLUMN_NAME_HAS_BEARING, hasBearing);
-        values.put(LocationEntry.COLUMN_NAME_HAS_ALTITUDE, hasAltitude);
-        values.put(LocationEntry.COLUMN_NAME_HAS_RADIUS, hasRadius);
-        values.put(LocationEntry.COLUMN_NAME_PROVIDER, provider);
-        values.put(LocationEntry.COLUMN_NAME_LOCATION_PROVIDER, locationProvider);
-        values.put(LocationEntry.COLUMN_NAME_STATUS, status);
-        values.put(LocationEntry.COLUMN_NAME_BATCH_START_MILLIS, batchStartMillis);
-        values.put(LocationEntry.COLUMN_NAME_MOCK_FLAGS, mockFlags);
-        return values;
-    }
-
+   
     public Object getValueForKey(String key) {
         if ("@id".equals(key)) {
             return locationId;
