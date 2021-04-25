@@ -33,7 +33,7 @@ import android.support.v4.content.LocalBroadcastManager;
 
 import com.marianhello.bgloc.Config;
 import com.marianhello.bgloc.ConnectivityListener;
-import com.marianhello.bgloc.NotificationHelper;
+import com.marianhello.bgloc.sync.NotificationHelper;
 import com.marianhello.bgloc.PluginException;
 import com.marianhello.bgloc.ResourceResolver;
 import com.marianhello.bgloc.data.BackgroundActivity;
@@ -41,10 +41,11 @@ import com.marianhello.bgloc.data.BackgroundLocation;
 import com.marianhello.bgloc.data.ConfigurationDAO;
 import com.marianhello.bgloc.data.DAOFactory;
 import com.marianhello.bgloc.headless.ActivityTask;
-import com.marianhello.bgloc.headless.HeadlessTaskRunner;
 import com.marianhello.bgloc.headless.LocationTask;
 import com.marianhello.bgloc.headless.StationaryTask;
 import com.marianhello.bgloc.headless.Task;
+import com.marianhello.bgloc.headless.TaskRunner;
+import com.marianhello.bgloc.headless.TaskRunnerFactory;
 import com.marianhello.bgloc.provider.LocationProvider;
 import com.marianhello.bgloc.provider.LocationProviderFactory;
 import com.marianhello.bgloc.provider.ProviderDelegate;
@@ -265,6 +266,9 @@ public class LocationServiceImpl extends Service implements ProviderDelegate, Lo
                 case CommandId.START:
                     start();
                     break;
+                case CommandId.START_FOREGROUND_SERVICE:
+                    startForegroundService();
+                    break;
                 case CommandId.STOP:
                     stop();
                     break;
@@ -282,6 +286,9 @@ public class LocationServiceImpl extends Service implements ProviderDelegate, Lo
                     break;
                 case CommandId.START_HEADLESS_TASK:
                     startHeadlessTask();
+                    break;
+                case CommandId.STOP_HEADLESS_TASK:
+                    stopHeadlessTask();
                     break;
             }
         } catch (Exception e) {
@@ -327,6 +334,12 @@ public class LocationServiceImpl extends Service implements ProviderDelegate, Lo
         bundle.putInt("action", MSG_ON_SERVICE_STARTED);
         bundle.putLong("serviceId", mServiceId);
         broadcastMessage(bundle);
+    }
+
+    @Override
+    public synchronized void startForegroundService() {
+        start();
+        startForeground();
     }
 
     @Override
@@ -435,17 +448,27 @@ public class LocationServiceImpl extends Service implements ProviderDelegate, Lo
     }
 
     @Override
-    public synchronized void registerHeadlessTask(String jsFunction) {
+    public synchronized void registerHeadlessTask(String taskRunnerClass) {
         logger.debug("Registering headless task");
-        mHeadlessFunction = jsFunction;
+        mHeadlessTaskRunnerClass = taskRunnerClass;
     }
 
     @Override
-    public synchronized  void startHeadlessTask() {
-        if (mHeadlessFunction != null) {
-            mHeadlessTaskRunner = new HeadlessTaskRunner(this);
-            mHeadlessTaskRunner.setFunction(mHeadlessFunction);
+    public synchronized void startHeadlessTask() {
+        if (mHeadlessTaskRunnerClass != null) {
+            TaskRunnerFactory trf = new TaskRunnerFactory();
+            try {
+                mHeadlessTaskRunner = trf.getTaskRunner(mHeadlessTaskRunnerClass);
+                ((AbstractTaskRunner) mHeadlessTaskRunner).setContext(this);
+            } catch (Exception e) {
+                logger.error("Headless task start failed: {}", e.getMessage());
+            }
         }
+    }
+
+    @Override
+    public synchronized void stopHeadlessTask() {
+        mHeadlessTaskRunner = null;
     }
 
     @Override
