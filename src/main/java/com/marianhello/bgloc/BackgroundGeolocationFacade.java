@@ -1,7 +1,6 @@
 package com.marianhello.bgloc;
 
 import android.Manifest;
-
 import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -24,13 +23,12 @@ import com.marianhello.bgloc.data.BackgroundActivity;
 import com.marianhello.bgloc.data.BackgroundLocation;
 import com.marianhello.bgloc.data.ConfigurationDAO;
 import com.marianhello.bgloc.data.DAOFactory;
-
 import com.marianhello.bgloc.provider.LocationProvider;
 import com.marianhello.bgloc.service.LocationService;
 import com.marianhello.bgloc.service.LocationServiceImpl;
 import com.marianhello.bgloc.service.LocationServiceProxy;
-import com.marianhello.bgloc.service.LocationTransform;
-
+import com.marianhello.bgloc.data.LocationTransform;
+import com.marianhello.bgloc.sync.NotificationHelper;
 import com.marianhello.logging.LoggerManager;
 import com.marianhello.logging.UncaughtExceptionLogger;
 
@@ -267,8 +265,7 @@ public class BackgroundGeolocationFacade {
         }
     }
 
- 
-
+   
 
     public BackgroundLocation getStationaryLocation() {
         return mStationaryLocation;
@@ -358,7 +355,6 @@ public class BackgroundGeolocationFacade {
         }
     }
 
-  
 
     /**
      * Force location sync
@@ -367,7 +363,7 @@ public class BackgroundGeolocationFacade {
      * and sync locations to defined syncUrl
      */
     public void forceSync() {
-        logger.debug("Sync locations forced");          
+        logger.debug("Sync locations forced");       
     }
 
     public int getAuthorizationStatus() {

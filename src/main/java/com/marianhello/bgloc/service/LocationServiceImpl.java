@@ -40,6 +40,8 @@ import com.marianhello.bgloc.data.BackgroundActivity;
 import com.marianhello.bgloc.data.BackgroundLocation;
 import com.marianhello.bgloc.data.ConfigurationDAO;
 import com.marianhello.bgloc.data.DAOFactory;
+import com.marianhello.bgloc.data.LocationTransform;
+import com.marianhello.bgloc.headless.AbstractTaskRunner;
 import com.marianhello.bgloc.headless.ActivityTask;
 import com.marianhello.bgloc.headless.LocationTask;
 import com.marianhello.bgloc.headless.StationaryTask;
@@ -49,7 +51,6 @@ import com.marianhello.bgloc.headless.TaskRunnerFactory;
 import com.marianhello.bgloc.provider.LocationProvider;
 import com.marianhello.bgloc.provider.LocationProviderFactory;
 import com.marianhello.bgloc.provider.ProviderDelegate;
-
 import com.marianhello.logging.LoggerManager;
 import com.marianhello.logging.UncaughtExceptionLogger;
 
@@ -103,16 +104,14 @@ public class LocationServiceImpl extends Service implements ProviderDelegate, Lo
     private ResourceResolver mResolver;
     private Config mConfig;
     private LocationProvider mProvider;
-    
 
     private org.slf4j.Logger logger;
 
     private final IBinder mBinder = new LocalBinder();
     private HandlerThread mHandlerThread;
     private ServiceHandler mServiceHandler;
-    
-    private String mHeadlessFunction;
-    private HeadlessTaskRunner mHeadlessTaskRunner;
+    private String mHeadlessTaskRunnerClass;
+    private TaskRunner mHeadlessTaskRunner;
 
     private long mServiceId = -1;
     private static boolean sIsRunning = false;
@@ -181,9 +180,6 @@ public class LocationServiceImpl extends Service implements ProviderDelegate, Lo
         mServiceHandler = new ServiceHandler(mHandlerThread.getLooper());
 
        
-
-        
-
         registerReceiver(connectivityChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
         NotificationHelper.registerServiceChannel(this);
     }
@@ -205,8 +201,7 @@ public class LocationServiceImpl extends Service implements ProviderDelegate, Lo
             }
         }
 
-        
-
+      
 
         unregisterReceiver(connectivityChangeReceiver);
 
@@ -310,7 +305,7 @@ public class LocationServiceImpl extends Service implements ProviderDelegate, Lo
 
         logger.debug("Will start service with: {}", mConfig.toString());
 
-        
+     
 
         LocationProviderFactory spf = sLocationProviderFactory != null
                 ? sLocationProviderFactory : new LocationProviderFactory(this);
@@ -666,7 +661,7 @@ public class LocationServiceImpl extends Service implements ProviderDelegate, Lo
         @Override
         public void onReceive(Context context, Intent intent) {
             boolean hasConnectivity = isNetworkAvailable();
-           logger.info("Network condition changed has connectivity: {}", hasConnectivity);
+            logger.info("Network condition changed has connectivity: {}", hasConnectivity);
         }
     };
 

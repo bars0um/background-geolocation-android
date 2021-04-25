@@ -61,14 +61,9 @@ android {
     useLibrary 'android.test.mock'
 
     defaultConfig {
-<<<<<<< HEAD
-        resValue "string", resourcePrefix + "account_name", 'Locations'      
-        resValue "string", resourcePrefix + "content_authority", applicationId + '.mauron85.bgloc.provider'
-=======
         resValue "string", resourcePrefix + "account_name", 'Locations'
         resValue "string", resourcePrefix + "account_type", accountPrefix + '.account'
         resValue "string", resourcePrefix + "content_authority", accountPrefix + '.provider'
->>>>>>> upstream/master
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         minSdkVersion project.ext.getMinSdkVersion()
         versionCode 1
